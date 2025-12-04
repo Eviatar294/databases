@@ -16,6 +16,6 @@ if __name__ == '__main__':
     WHERE Nationality = 'BRA';
     """)
     
-    print(','.join(str(row) for row in cursor.fetchall()))
+    print(', '.join(str(row) for row in cursor.fetchall()))
     cursor.close()
     mydb.close()
