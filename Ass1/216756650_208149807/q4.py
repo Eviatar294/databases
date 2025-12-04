@@ -1,5 +1,6 @@
 import mysql.connector
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -7,27 +8,22 @@ if __name__ == "__main__":
         database="f1_data",
         port="3307",
     )
-
     cursor = mydb.cursor()
     cursor.execute("""
-        WITH num_victories_1999 as (
-	SELECT Car, COUNT(*) as num_victories
-    FROM winners as w
-    WHERE YEAR(w.date) = 1999
-    GROUP BY w.car
-),
-gloriest_car_1999 as (
-	SELECT Car
-    FROM num_victories_1999
-    ORDER BY num_victories DESC
-    LIMIT 1
-)
-SELECT COUNT(*)
-FROM winners w
-JOIN gloriest_car_1999 g ON w.Car = g.Car
-WHERE YEAR(w.date) = 2001
-        """
-    )
+    # Count wins in 2001 for the car that appears most frequently 
+    # as a winner in 1999.
+    SELECT COUNT(*)
+    FROM winners
+    WHERE YEAR(Date) = 2001 AND Car = (
+        SELECT Car
+        FROM winners
+        WHERE YEAR(Date) = 1999
+        GROUP BY Car
+        ORDER BY COUNT(*) DESC
+        LIMIT 1
+    );
+    """)
+    
     print(', '.join(str(row) for row in cursor.fetchall()))
     cursor.close()
     mydb.close()

@@ -1,5 +1,6 @@
 import mysql.connector
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     mydb = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -7,23 +8,14 @@ if __name__ == "__main__":
         database="f1_data",
         port="3307",
     )
-
     cursor = mydb.cursor()
     cursor.execute("""
-        WITH sum_maserati as (
-	SELECT SUM(t.PTS) as sumM
-    FROM teams_updated t
-    WHERE t.Car = "Maserati"
-),
-sum_ferrari as (
-	SELECT SUM(t.PTS) as sumF
-    FROM teams_updated t
-    WHERE t.Car = "Ferrari"
-)
-SELECT f.sumf - m.sumM as "diff"
-FROM sum_ferrari f, sum_maserati m
-        """
-    )
-    print(', '.join(str(row) for row in cursor.fetchall()))
+    # Calculate sum of Ferrari points and subtract sum of Maserati points
+    SELECT 
+        (SELECT SUM(PTS) FROM teams_updated WHERE Car = 'Ferrari') - 
+        (SELECT SUM(PTS) FROM teams_updated WHERE Car = 'Maserati') AS diff;
+    """)
+    
+    print(','.join(str(row) for row in cursor.fetchall()))
     cursor.close()
     mydb.close()
