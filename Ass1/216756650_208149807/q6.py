@@ -24,11 +24,7 @@ SELECT
 FROM gp_laps g1
 JOIN gp_laps g2
     ON g1.Laps = g2.Laps      
-   AND g1.GP < g2.GP         
-ORDER BY
-    Laps,
-    GP1,
-    GP2;
+   AND g1.GP < g2.GP   
         """
     )
     print(', '.join(str(row) for row in cursor.fetchall()))
